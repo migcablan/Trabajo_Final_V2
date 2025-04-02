@@ -23,7 +23,6 @@ public class XoteloApiClient {
 			int adults,
 			int children
 	) throws Exception {
-		// Construir URL sin children_ages
 		String url = String.format(
 				"%s?hotel_key=%s&chk_in=%s&chk_out=%s&rooms=%d&adults=%d&children=%d",
 				BASE_URL, hotelKey, checkIn, checkOut, rooms, adults, children
@@ -42,7 +41,6 @@ public class XoteloApiClient {
 			throw new RuntimeException("Error en la API: " + apiResponse.getError().getMessage());
 		}
 
-		// Asignar campos adicionales a cada tarifa
 		return apiResponse.getResult().getRates().stream()
 				.peek(rate -> {
 					rate.setCheckIn(apiResponse.getResult().getCheckIn());

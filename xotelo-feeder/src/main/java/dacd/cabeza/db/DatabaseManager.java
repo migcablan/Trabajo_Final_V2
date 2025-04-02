@@ -8,13 +8,12 @@ import java.sql.Statement;
 public class DatabaseManager {
 	public static final String DB_URL = "jdbc:sqlite:xotelo_data.db";
 
-	// Método para obtener una conexión
 	public static Connection getConnection() throws SQLException {
-		return DriverManager.getConnection(DB_URL); // <-- Añadir este método
+		return DriverManager.getConnection(DB_URL);
 	}
 
 	public static void initialize() throws SQLException {
-		try (Connection conn = getConnection(); // Usar getConnection() aquí también
+		try (Connection conn = getConnection();
 			 Statement stmt = conn.createStatement()) {
 
 			String sql = """

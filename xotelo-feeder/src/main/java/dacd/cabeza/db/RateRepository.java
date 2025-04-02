@@ -14,7 +14,6 @@ public class RateRepository {
 
 	private static final String SELECT_ALL_SQL = "SELECT * FROM hotel_rates";
 
-	// Método para guardar tarifas
 	public void saveRates(List<HotelRate> rates) throws SQLException {
 		if (rates == null || rates.isEmpty()) return;
 
@@ -39,7 +38,6 @@ public class RateRepository {
 		}
 	}
 
-	// Método para obtener todas las tarifas
 	public List<HotelRate> getAllRates() throws SQLException {
 		List<HotelRate> rates = new ArrayList<>();
 

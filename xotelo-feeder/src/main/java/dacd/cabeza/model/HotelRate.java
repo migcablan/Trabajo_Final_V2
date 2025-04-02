@@ -18,11 +18,10 @@ public class HotelRate {
 	private String currency;
 	private String checkIn;
 	private String checkOut;
-	private int roomsRequested;  // Habitaciones solicitadas
-	private int adults;          // Número de adultos
-	private int children;        // Número de niños
+	private int roomsRequested;
+	private int adults;
+	private int children;
 
-	// Getters y Setters
 	public String getProviderCode() { return providerCode; }
 	public void setProviderCode(String providerCode) { this.providerCode = providerCode; }
 

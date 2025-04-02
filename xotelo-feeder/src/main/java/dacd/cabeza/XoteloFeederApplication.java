@@ -20,7 +20,6 @@ public class XoteloFeederApplication {
 		try (Scanner scanner = new Scanner(System.in)) {
 			DatabaseManager.initialize();
 
-			// Obtener parámetros desde entrada de usuario
 			System.out.println("=== Configuración de parámetros ===");
 			System.out.print("Habitaciones: ");
 			int rooms = scanner.nextInt();
@@ -33,7 +32,6 @@ public class XoteloFeederApplication {
 
 			ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
 
-			// Tarea programada con parámetros dinámicos
 			scheduler.scheduleAtFixedRate(() ->
 							updateRates(rooms, adults, children),
 					0, 1, TimeUnit.HOURS
@@ -58,7 +56,7 @@ public class XoteloFeederApplication {
 
 			XoteloApiClient apiClient = new XoteloApiClient();
 			List<HotelRate> rates = apiClient.getHotelRates(
-					"g230095-d530762",  // Reemplazar por clave real
+					"g230095-d530762",
 					checkIn,
 					checkOut,
 					rooms,
