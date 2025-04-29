@@ -1,11 +1,12 @@
 package dacd.cabeza;
 
 import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class XoteloFeederApplicationTest {
+class XoteloFeederApplicationTest {
 
 	@Test
 	void testMainExecution() {
-		System.out.println("Prueba básica ejecutada.");
+		assertDoesNotThrow(() -> XoteloFeederApplication.main(new String[]{}));
 	}
 }

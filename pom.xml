@@ -10,7 +10,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>xotelo-feeder</module>
-        <module>OpenWeatherMap-feeder</module>
+        <module>OpenWeatherMap</module>
     </modules>
 
     <properties>

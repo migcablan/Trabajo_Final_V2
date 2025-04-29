@@ -1,13 +1,12 @@
 package dacd.cabeza.db;
 
+import dacd.cabeza.model.HotelRate;
 import org.junit.jupiter.api.Test;
-
 import java.sql.SQLException;
 import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.*;
 
-public class RateRepositoryTest {
+class RateRepositoryTest {
 
 	@Test
 	void testSaveAndGetRates() throws SQLException {
@@ -29,5 +28,6 @@ public class RateRepositoryTest {
 
 		List<HotelRate> rates = repository.getAllRates();
 		assertFalse(rates.isEmpty());
+		assertEquals("TEST_PROVIDER", rates.get(0).getProviderName());
 	}
 }

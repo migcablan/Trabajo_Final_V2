@@ -3,12 +3,10 @@ package dacd.cabeza.api;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.junit.jupiter.api.Test;
-
 import java.time.LocalDate;
-
 import static org.junit.jupiter.api.Assertions.*;
 
-public class LocalDateAdapterTest {
+class LocalDateAdapterTest {
 
 	@Test
 	void testSerializeAndDeserialize() {
