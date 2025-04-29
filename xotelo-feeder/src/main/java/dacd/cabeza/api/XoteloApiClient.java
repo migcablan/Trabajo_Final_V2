@@ -3,6 +3,7 @@ package dacd.cabeza.api;
 import com.google.gson.Gson;
 import dacd.cabeza.model.HotelRate;
 import dacd.cabeza.model.XoteloApiResponse;
+
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;

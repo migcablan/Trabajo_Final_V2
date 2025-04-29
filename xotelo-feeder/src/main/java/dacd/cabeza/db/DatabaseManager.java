@@ -8,12 +8,8 @@ import java.sql.Statement;
 public class DatabaseManager {
 	public static final String DB_URL = "jdbc:sqlite:xotelo_data.db";
 
-	public static Connection getConnection() throws SQLException {
-		return DriverManager.getConnection(DB_URL);
-	}
-
 	public static void initialize() throws SQLException {
-		try (Connection conn = getConnection();
+		try (Connection conn = DriverManager.getConnection(DB_URL);
 			 Statement stmt = conn.createStatement()) {
 
 			String sql = """
@@ -34,5 +30,9 @@ public class DatabaseManager {
 
 			stmt.execute(sql);
 		}
+	}
+
+	public static Connection getConnection() throws SQLException {
+		return DriverManager.getConnection(DB_URL);
 	}
 }

@@ -1,6 +1,7 @@
 package dacd.cabeza.db;
 
 import dacd.cabeza.model.HotelRate;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +18,7 @@ public class RateRepository {
 	public void saveRates(List<HotelRate> rates) throws SQLException {
 		if (rates == null || rates.isEmpty()) return;
 
-		try (Connection conn = DriverManager.getConnection(DatabaseManager.DB_URL);
+		try (Connection conn = DatabaseManager.getConnection();
 			 PreparedStatement pstmt = conn.prepareStatement(INSERT_SQL)) {
 
 			for (HotelRate rate : rates) {
@@ -41,7 +42,7 @@ public class RateRepository {
 	public List<HotelRate> getAllRates() throws SQLException {
 		List<HotelRate> rates = new ArrayList<>();
 
-		try (Connection conn = DriverManager.getConnection(DatabaseManager.DB_URL);
+		try (Connection conn = DatabaseManager.getConnection();
 			 Statement stmt = conn.createStatement();
 			 ResultSet rs = stmt.executeQuery(SELECT_ALL_SQL)) {
 

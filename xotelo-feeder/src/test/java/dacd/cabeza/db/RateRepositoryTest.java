@@ -1,6 +1,5 @@
 package dacd.cabeza.db;
 
-import dacd.cabeza.model.HotelRate;
 import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;

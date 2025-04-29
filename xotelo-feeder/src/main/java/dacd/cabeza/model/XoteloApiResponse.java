@@ -6,7 +6,6 @@ import java.util.List;
 public class XoteloApiResponse {
 	@SerializedName("error")
 	private ApiError error;
-
 	@SerializedName("result")
 	private Result result;
 
@@ -17,6 +16,7 @@ public class XoteloApiResponse {
 		@SerializedName("status_code")
 		private int statusCode;
 		private String message;
+
 		public int getStatusCode() { return statusCode; }
 		public String getMessage() { return message; }
 	}

@@ -8,47 +8,20 @@ import dacd.cabeza.model.HotelRate;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Scanner;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 public class XoteloFeederApplication {
+
 	private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
 	public static void main(String[] args) {
-		try (Scanner scanner = new Scanner(System.in)) {
+		try {
 			DatabaseManager.initialize();
 
-			System.out.println("=== Configuración de parámetros ===");
-			System.out.print("Habitaciones: ");
-			int rooms = scanner.nextInt();
+			// Parámetros fijos
+			int rooms = 2;
+			int adults = 2;
+			int children = 1;
 
-			System.out.print("Adultos: ");
-			int adults = scanner.nextInt();
-
-			System.out.print("Niños: ");
-			int children = scanner.nextInt();
-
-			ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
-
-			scheduler.scheduleAtFixedRate(() ->
-							updateRates(rooms, adults, children),
-					0, 1, TimeUnit.HOURS
-			);
-
-			scheduler.scheduleAtFixedRate(() ->
-							displayRates(),
-					0, 30, TimeUnit.SECONDS
-			);
-
-		} catch (Exception e) {
-			System.err.println("Error inicial: " + e.getMessage());
-		}
-	}
-
-	private static void updateRates(int rooms, int adults, int children) {
-		try {
 			LocalDate checkInDate = LocalDate.now();
 			LocalDate checkOutDate = checkInDate.plusDays(5);
 			String checkIn = checkInDate.format(DATE_FORMATTER);
@@ -56,7 +29,7 @@ public class XoteloFeederApplication {
 
 			XoteloApiClient apiClient = new XoteloApiClient();
 			List<HotelRate> rates = apiClient.getHotelRates(
-					"g230095-d530762",
+					"g230095-d237098",
 					checkIn,
 					checkOut,
 					rooms,
@@ -64,17 +37,27 @@ public class XoteloFeederApplication {
 					children
 			);
 
-			new RateRepository().saveRates(rates);
+			RateRepository rateRepository = new RateRepository();
+			rateRepository.saveRates(rates);
+
 			System.out.println("[Actualización] Datos guardados: " + rates.size() + " registros.");
+
+			displayRates(rateRepository);
 		} catch (Exception e) {
-			System.err.println("Error en actualización: " + e.getMessage());
+			System.err.println("Error en la aplicación: " + e.getMessage());
 		}
 	}
 
-	private static void displayRates() {
+	private static void displayRates(RateRepository rateRepository) {
 		try {
-			List<HotelRate> rates = new RateRepository().getAllRates();
+			List<HotelRate> rates = rateRepository.getAllRates();
 			System.out.println("\n=== Base de Datos ===");
+
+			if (rates.isEmpty()) {
+				System.out.println("No hay registros disponibles.");
+				return;
+			}
+
 			rates.forEach(rate -> System.out.printf(
 					"""
 					Proveedor: %-12s | Tarifa: %-8.2f %s
@@ -92,7 +75,7 @@ public class XoteloFeederApplication {
 					rate.getChildren()
 			));
 		} catch (Exception e) {
-			System.err.println("Error al mostrar datos: " + e.getMessage());
+			System.err.println("Error al mostrar los datos: " + e.getMessage());
 		}
 	}
 }
