@@ -3,7 +3,7 @@ package dacd.cabeza.api;
 import com.google.gson.Gson;
 import dacd.cabeza.model.HotelRate;
 import dacd.cabeza.model.XoteloApiResponse;
-
+import dacd.cabeza.messaging.HotelEventPublisher;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -11,7 +11,6 @@ import java.net.http.HttpResponse;
 import java.util.List;
 
 public class XoteloApiClient {
-
 	private static final String BASE_URL = "https://data.xotelo.com/api/rates";
 	private final HttpClient httpClient = HttpClient.newHttpClient();
 	private final Gson gson = new Gson();
@@ -35,22 +34,21 @@ public class XoteloApiClient {
 				.build();
 
 		HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-
 		XoteloApiResponse apiResponse = gson.fromJson(response.body(), XoteloApiResponse.class);
 
 		if (apiResponse.getError() != null) {
 			throw new RuntimeException("Error en la API: " + apiResponse.getError().getMessage());
 		}
 
-		return apiResponse.getResult().getRates().stream()
-				.peek(rate -> {
-					rate.setCheckIn(apiResponse.getResult().getCheckIn());
-					rate.setCheckOut(apiResponse.getResult().getCheckOut());
-					rate.setCurrency(apiResponse.getResult().getCurrency());
-					rate.setRoomsRequested(rooms);
-					rate.setAdults(adults);
-					rate.setChildren(children);
-				})
-				.toList();
+		List<HotelRate> rates = apiResponse.getResult().getRates();
+
+		// Publicar cada evento en ActiveMQ
+		HotelEventPublisher publisher = new HotelEventPublisher();
+		rates.forEach(rate -> {
+			String jsonEvent = gson.toJson(rate);
+			publisher.publish(jsonEvent);
+		});
+
+		return rates;
 	}
 }

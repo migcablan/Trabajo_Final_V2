@@ -1,24 +1,33 @@
 package schemas;
 
 import org.junit.jupiter.api.Test;
-import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
-class WeatherResponseTest {
+import com.google.gson.Gson;
+
+public class WeatherResponseTest {
 
 	@Test
-	void testWeatherResponseConstruction() {
-		WeatherResponse.WeatherData data = new WeatherResponse.WeatherData(10.0, 15.0, 1010, 60);
-		WeatherResponse response = new WeatherResponse("test_source", 1, List.of(data));
+	void testWeatherResponseDeserialization() {
+		String json = """
+            {
+              "main": {
+                "temp_min": 12.5,
+                "temp_max": 18.3,
+                "pressure": 1012,
+                "humidity": 65
+              }
+            }
+        """;
 
-		// Usa los getters en lugar de acceder directamente a los campos
-		assertEquals("test_source", response.getSource());
-		assertEquals(1, response.getCount());
-		assertEquals(1, response.getWeatherItems().size());
-		WeatherResponse.WeatherData item = response.getWeatherItems().get(0);
-		assertEquals(10.0, item.getTempMin());
-		assertEquals(15.0, item.getTempMax());
-		assertEquals(1010, item.getPressure());
-		assertEquals(60, item.getHumidity());
+		Gson gson = new Gson();
+		WeatherResponse response = gson.fromJson(json, WeatherResponse.class);
+
+		assertNotNull(response);
+		assertNotNull(response.getMain());
+		assertEquals(12.5, response.getMain().getTempMin());
+		assertEquals(18.3, response.getMain().getTempMax());
+		assertEquals(1012, response.getMain().getPressure());
+		assertEquals(65, response.getMain().getHumidity());
 	}
 }

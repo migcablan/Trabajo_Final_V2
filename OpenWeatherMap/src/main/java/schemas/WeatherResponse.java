@@ -1,42 +1,30 @@
 package schemas;
 
-import java.util.List;
+import com.google.gson.annotations.SerializedName;
 
 public class WeatherResponse {
-	private String source;
-	private int count;
-	private List<WeatherData> weatherItems;
+	@SerializedName("main")
+	private Main main;
 
-	// Constructor
-	public WeatherResponse(String source, int count, List<WeatherData> weatherItems) {
-		this.source = source;
-		this.count = count;
-		this.weatherItems = weatherItems;
-	}
-
-	// Getters (necesarios para acceder a los campos en el test)
-	public String getSource() { return source; }
-	public int getCount() { return count; }
-	public List<WeatherData> getWeatherItems() { return weatherItems; }
-
-	// Clase interna estática para WeatherData
-	public static class WeatherData {
+	public static class Main {
+		@SerializedName("temp_min")
 		private double tempMin;
+
+		@SerializedName("temp_max")
 		private double tempMax;
+
+		@SerializedName("pressure")
 		private int pressure;
+
+		@SerializedName("humidity")
 		private int humidity;
 
-		public WeatherData(double tempMin, double tempMax, int pressure, int humidity) {
-			this.tempMin = tempMin;
-			this.tempMax = tempMax;
-			this.pressure = pressure;
-			this.humidity = humidity;
-		}
-
-		// Getters
+		// Getters (necesarios para acceder a los datos)
 		public double getTempMin() { return tempMin; }
 		public double getTempMax() { return tempMax; }
 		public int getPressure() { return pressure; }
 		public int getHumidity() { return humidity; }
 	}
+
+	public Main getMain() { return main; }
 }

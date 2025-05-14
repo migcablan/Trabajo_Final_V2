@@ -11,6 +11,7 @@
     <modules>
         <module>xotelo-feeder</module>
         <module>OpenWeatherMap</module>
+        <module>event-store-publisher</module>
     </modules>
 
     <properties>

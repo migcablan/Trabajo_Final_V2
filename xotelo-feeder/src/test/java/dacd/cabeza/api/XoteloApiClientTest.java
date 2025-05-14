@@ -12,8 +12,8 @@ class XoteloApiClientTest {
 		XoteloApiClient apiClient = new XoteloApiClient();
 		List<HotelRate> rates = apiClient.getHotelRates(
 				"g230095-d530762",  // Reemplaza con tu clave real
-				"2025-04-01",
-				"2025-04-05",
+				"2025-05-14",
+				"2025-05-19",
 				2,
 				2,
 				0

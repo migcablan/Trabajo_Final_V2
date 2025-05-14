@@ -1,19 +1,35 @@
 import model.Model;
-import model.WeatherData;
-import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class Main {
 	public static void main(String[] args) {
-		Model model = new Model();
-		List<WeatherData> dataList = model.getWeather("Madrid"); // Ejemplo con "Madrid"
+		ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
-		// Guardar en la base de datos
-		DBExample.main(args);
+		Runnable task = () -> {
+			try {
+				// 1. Obtener datos reales de la API y publicar en ActiveMQ
+				WeatherService.getWeatherData("Las%20Palmas");
 
-		// Mostrar resultados
-		dataList.forEach(data -> System.out.printf(
-				"Temp Mín: %.2f | Temp Máx: %.2f | Presión: %d | Humedad: %d%%\n",
-				data.getTempMin(), data.getTempMax(), data.getPressure(), data.getHumidity()
-		));
+				// 2. (Opcional) Mostrar datos simulados por consola
+				Model model = new Model();
+				model.getWeather("Las Palmas").forEach(data ->
+						System.out.printf("Temp Mín: %.2f | Temp Máx: %.2f%n", data.getTempMin(), data.getTempMax())
+				);
+			} catch (Exception e) {
+				System.err.println("Error: " + e.getMessage());
+			}
+		};
+
+		// Programa la tarea cada hora (3600 segundos)
+		scheduler.scheduleAtFixedRate(task, 0, 1, TimeUnit.HOURS);
+
+		// Mantén el programa en ejecución
+		try {
+			Thread.currentThread().join();
+		} catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+		}
 	}
 }
