@@ -1,23 +1,28 @@
 package dacd.cabeza.storage;
 
-import java.nio.file.*;
-import java.time.Instant;
-import java.time.ZoneId;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 public class EventFileManager {
-	private static final DateTimeFormatter DATE_FORMATTER =
-			DateTimeFormatter.ofPattern("yyyyMMdd").withZone(ZoneId.of("UTC"));
+	private static final String EVENT_STORE_ROOT = "eventstore";
+	private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd");
 
-	public static void saveEvent(String topic, String source, Instant timestamp, String json) {
+	public void saveEvent(String topic, String source, String eventData) {
 		try {
-			String date = DATE_FORMATTER.format(timestamp);
-			Path path = Paths.get("eventstore", topic, source, date + ".events");
-			Files.createDirectories(path.getParent());
-			Files.writeString(path, json + System.lineSeparator(),
-					StandardOpenOption.CREATE,
-					StandardOpenOption.APPEND);
-		} catch (Exception e) {
+			String date = LocalDate.now().format(DATE_FORMATTER);
+			Path directoryPath = Paths.get(EVENT_STORE_ROOT, topic, source);
+			Files.createDirectories(directoryPath);
+
+			Path filePath = directoryPath.resolve(date + ".events");
+			try (FileWriter writer = new FileWriter(filePath.toFile(), true)) {
+				writer.write(eventData + System.lineSeparator());
+			}
+		} catch (IOException e) {
 			System.err.println("Error guardando evento: " + e.getMessage());
 		}
 	}

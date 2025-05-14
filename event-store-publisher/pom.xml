@@ -3,13 +3,11 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>dacd.cabeza</groupId>
-        <artifactId>Trabajo_Final_V2</artifactId>
-        <version>1.0-SNAPSHOT</version>
-    </parent>
 
+    <groupId>dacd.cabeza</groupId>
     <artifactId>event-store-publisher</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
@@ -22,15 +20,25 @@
             <groupId>org.apache.activemq</groupId>
             <artifactId>activemq-client</artifactId>
             <version>6.1.6</version>
-            <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
             <version>2.10.1</version>
-            <scope>compile</scope>
         </dependency>
     </dependencies>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <mainClass>dacd.cabeza.EventStoreBuilder</mainClass>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

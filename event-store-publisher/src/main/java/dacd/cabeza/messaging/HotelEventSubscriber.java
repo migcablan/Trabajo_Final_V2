@@ -1,42 +1,43 @@
 package dacd.cabeza.messaging;
 
-import dacd.cabeza.storage.EventFileManager;
 import org.apache.activemq.ActiveMQConnectionFactory;
+import dacd.cabeza.storage.EventFileManager;
 import jakarta.jms.*;
-import java.time.Instant;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
 public class HotelEventSubscriber {
-	public void start() {
+	private static final String BROKER_URL = "tcp://localhost:61616";
+	private static final String TOPIC_NAME = "HotelPrice";
+	private static final String CLIENT_ID = "EventStoreBuilder-Hotel";
+	private static final String SUBSCRIPTION_NAME = "HotelPriceSubscription";
+	private final EventFileManager fileManager = new EventFileManager();
+
+	public void subscribe() {
 		try {
-			ConnectionFactory factory = new ActiveMQConnectionFactory("tcp://localhost:61616");
+			ConnectionFactory factory = new ActiveMQConnectionFactory(BROKER_URL);
 			Connection connection = factory.createConnection();
-			connection.setClientID("hotel-subscriber");
+			connection.setClientID(CLIENT_ID); // Para suscripción duradera
 			connection.start();
 
 			Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-			Topic topic = session.createTopic("HotelPrice");
-			MessageConsumer consumer = session.createDurableSubscriber(topic, "hotel-sub");
+			Topic topic = session.createTopic(TOPIC_NAME);
+
+			// Suscripción duradera
+			MessageConsumer consumer = session.createDurableSubscriber(topic, SUBSCRIPTION_NAME);
 
 			consumer.setMessageListener(message -> {
 				if (message instanceof TextMessage) {
 					try {
-						String json = ((TextMessage) message).getText();
-						JsonObject event = JsonParser.parseString(json).getAsJsonObject();
-
-						// Extraer campos del evento
-						String ss = event.get("ss").getAsString();
-						Instant ts = Instant.parse(event.get("ts").getAsString());
-
-						// Guardar en disco
-						EventFileManager.saveEvent("HotelPrice", ss, ts, json);
-						System.out.println("[HotelPrice] Evento guardado: " + json);
-					} catch (Exception e) {
-						System.err.println("Error procesando mensaje HotelPrice: " + e.getMessage());
+						String jsonEvent = ((TextMessage) message).getText();
+						// Validar formato JSON (opcional)
+						new com.google.gson.JsonParser().parse(jsonEvent);
+						fileManager.saveEvent("HotelPrice", "Xotelo", jsonEvent);
+						System.out.println("[Hotel] Evento almacenado: " + jsonEvent);
+					} catch (JMSException | com.google.gson.JsonSyntaxException e) {
+						System.err.println("Evento no válido: " + e.getMessage());
 					}
 				}
 			});
+
 		} catch (JMSException e) {
 			System.err.println("Error en HotelEventSubscriber: " + e.getMessage());
 		}
