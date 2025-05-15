@@ -10,6 +10,7 @@
     <option name="ignoredFiles">
       <set>
         <option value="$PROJECT_DIR$/OpenWeatherMap-feeder/pom.xml" />
+        <option value="$PROJECT_DIR$/event-store-publisher/pom.xml" />
       </set>
     </option>
   </component>

@@ -4,11 +4,11 @@ import org.apache.activemq.ActiveMQConnectionFactory;
 import dacd.cabeza.storage.EventFileManager;
 import jakarta.jms.*;
 
-public class HotelEventSubscriber {
+public class WeatherEventSubscriber {
 	private static final String BROKER_URL = "tcp://localhost:61616";
-	private static final String TOPIC_NAME = "HotelPrice";
-	private static final String CLIENT_ID = "EventStoreBuilder-Hotel";
-	private static final String SUBSCRIPTION_NAME = "HotelPriceSubscription";
+	private static final String TOPIC_NAME = "Weather";
+	private static final String CLIENT_ID = "EventStoreBuilder-Weather";
+	private static final String SUBSCRIPTION_NAME = "WeatherSubscription";
 	private final EventFileManager fileManager = new EventFileManager();
 
 	public void subscribe() {
@@ -28,18 +28,16 @@ public class HotelEventSubscriber {
 				if (message instanceof TextMessage) {
 					try {
 						String jsonEvent = ((TextMessage) message).getText();
-						// Validar formato JSON (opcional)
-						new com.google.gson.JsonParser().parse(jsonEvent);
-						fileManager.saveEvent("HotelPrice", "Xotelo", jsonEvent);
-						System.out.println("[Hotel] Evento almacenado: " + jsonEvent);
-					} catch (JMSException | com.google.gson.JsonSyntaxException e) {
-						System.err.println("Evento no válido: " + e.getMessage());
+						fileManager.saveEvent("Weather", "OpenWeatherMap", jsonEvent);
+						System.out.println("[Weather] Evento almacenado: " + jsonEvent);
+					} catch (JMSException e) {
+						System.err.println("Error procesando mensaje: " + e.getMessage());
 					}
 				}
 			});
 
 		} catch (JMSException e) {
-			System.err.println("Error en HotelEventSubscriber: " + e.getMessage());
+			System.err.println("Error en WeatherEventSubscriber: " + e.getMessage());
 		}
 	}
 }
